@@ -1,1 +1,0 @@
-Olá! Seja bem-vindo!
