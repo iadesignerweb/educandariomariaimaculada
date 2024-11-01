@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuração de Chatbot para WhatsApp</title>
+  <style>
+    :root {
+      --primary: #25D366;
+      --secondary: #128C7E;
+      --dark: #075E54;
+      --light: #DCF8C6;
+      --white: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 100px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: var(--white);
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+    }
+
+    .typing-indicator {
+      font-style: italic;
+      color: gray;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Configuração de Chatbot para WhatsApp</h1>
+    <form id="chatbotForm">
+      <div class="form-group">
+        <label for="apiURL">IJKXIYDA2JEAEIBJ5ZJAEKAHXL2CDXUE TK3FKIB2C5Q4X7JKGOGEUSOUVSHQPTUQ</label>
+        <input type="text" id="apiURL" placeholder="IJKXIYDA2JEAEIBJ5ZJAEKAHXL2CDXUE TK3FKIB2C5Q4X7JKGOGEUSOUVSHQPTUQ" required>
+      </div>
+      <div class="form-group">
+        <label for="whatsappNumber">5587999786261</label>
+        <input type="text" id="whatsappNumber" placeholder="Número com código do país" required>
+      </div>
+      <button type="button" class="btn" onclick="saveConfiguration()">Configurar Resposta</button>
+    </form>
+    <p class="typing-indicator" id="typingIndicator">IA está digitando...</p>
+  </div>
+
+  <script>
+    // Mensagens personalizadas
+    const messages = [
+      "Olá! Sou a IA, sua assistente virtual da IA Designer. Como posso ajudar você hoje?",
+      "Enquanto transfiro sua chamada, aproveite para conhecer nosso Curso de Inteligência Artificial! É realmente incrível e cheio de conteúdos relevantes. Dá uma olhadinha no catálogo: [https://pliniocell.rdi.store/products/",
+      "Quer ficar por dentro das novidades? Confira nossas redes sociais: Instagram @pliniofabricio_ e @ia.designer.oficial",
+      "Você também pode se inscrever no YouTube do nosso desenvolvedor para mais conteúdos: http://wa.me/@pliniofabricio_",
+      "Se preferir, deixe sua mensagem aqui, e Plínio responderá assim que possível.",
+      "Obrigado pelo contato! Estamos à disposição. 🍀🎶",
+      "🤖 IA Designer."
+    ];
+
+    // Carrega a configuração da API e número do WhatsApp do Local Storage ao carregar a página
+    window.onload = function() {
+      const savedApiURL = localStorage.getItem("apiURL");
+      const savedWhatsappNumber = localStorage.getItem("whatsappNumber");
+
+      if (savedApiURL && savedWhatsappNumber) {
+        document.getElementById("apiURL").value = savedApiURL;
+        document.getElementById("whatsappNumber").value = savedWhatsappNumber;
+        scheduleResponse(savedApiURL, savedWhatsappNumber); // Inicia o envio de mensagens automaticamente
+      }
+    };
+
+    // Salva as configurações no Local Storage e inicia o envio de mensagens
+    function saveConfiguration() {
+      const apiURL = document.getElementById("apiURL").value;
+      const whatsappNumber = document.getElementById("whatsappNumber").value;
+
+      localStorage.setItem("apiURL", apiURL);
+      localStorage.setItem("whatsappNumber", whatsappNumber);
+
+      scheduleResponse(apiURL, whatsappNumber);
+    }
+
+    // Função para simular a digitação e enviar mensagens
+    function scheduleResponse(apiURL, whatsappNumber) {
+      function simulateTyping(callback) {
+        const typingIndicator = document.getElementById('typingIndicator');
+        typingIndicator.style.display = 'block';
+        
+        setTimeout(() => {
+          typingIndicator.style.display = 'none';
+          callback();
+        }, 3000); // Tempo de digitação de 3 segundos
+      }
+
+      function sendMessage(apiURL, whatsappNumber, message) {
+        const formData = new FormData();
+        formData.append("number", whatsappNumber);
+        formData.append("message", message);
+
+        fetch(apiURL, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Mensagem enviada com sucesso:", message);
+        })
+        .catch(error => {
+          console.error("Erro ao enviar mensagem:", error);
+        });
+      }
+
+      // Inicia o fluxo de mensagens após 8 dias
+      setTimeout(() => {
+        messages.forEach((message, index) => {
+          setTimeout(() => {
+            simulateTyping(() => {
+              sendMessage(apiURL, whatsappNumber, message);
+            });
+          }, index * 6000); // Intervalo de 3 segundos entre mensagens (digitação + envio)
+        });
+      }, 8 * 24 * 60 * 60 * 1000); // 8 dias em milissegundos
+    }
+  </script>
+</body>
+</html>
