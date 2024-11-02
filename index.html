@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot para WhatsApp</title>
+  <title>Configuração de Chatbot para WhatsApp</title>
   <style>
     :root {
       --primary: #25D366;
       --secondary: #128C7E;
       --dark: #075E54;
       --light: #DCF8C6;
-      --white: #fff;
+      --background: #f0f2f5;
+      --text: #333;
     }
 
     * {
@@ -21,14 +22,28 @@
     }
 
     body {
-      background: #f0f2f5;
+      background: var(--background);
       padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
     .container {
       max-width: 600px;
-      margin: 0 auto;
-      background: var(--white);
+      width: 100%;
+      background: var(--light);
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: none;
+    }
+
+    .login-container {
+      max-width: 400px;
+      width: 100%;
+      background: var(--light);
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       padding: 20px;
@@ -37,7 +52,7 @@
     h1 {
       color: var(--dark);
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .form-group {
@@ -51,112 +66,158 @@
       font-weight: 500;
     }
 
-    input[type="text"],
-    input[type="password"],
+    input[type="text"], input[type="password"],
     textarea {
       width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 14px;
+      color: var(--text);
     }
 
     textarea {
-      height: 100px;
+      height: 80px;
     }
 
     .btn {
       background: var(--primary);
-      color: var(--white);
+      color: #fff;
       padding: 10px 15px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       font-size: 16px;
       transition: background 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
     }
 
     .btn:hover {
       background: var(--secondary);
     }
+
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .logout {
+      text-align: center;
+      color: var(--dark);
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .typing-indicator {
+      display: none;
+      color: var(--dark);
+      font-size: 14px;
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <!-- Login Page -->
+  <div class="login-container" id="loginContainer">
+    <h1>Acesso ao Chatbot</h1>
+    <div class="form-group">
+      <label for="username">ID:</label>
+      <input type="text" id="username" placeholder="ID" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Senha:</label>
+      <input type="password" id="password" placeholder="Senha" required>
+    </div>
+    <button type="button" class="btn" onclick="login()">Entrar</button>
+  </div>
+
+  <!-- Chatbot Form -->
+  <div class="container" id="chatbotContainer">
     <h1>Chatbot para WhatsApp</h1>
     <form id="chatbotForm">
       <div class="form-group">
-        <label for="IJKXIYDA2JEAEIBJ5ZJAEKAHXL2CDXUE
-TK3FKIB2C5Q4X7JKGOGEUSOUVSHQPTUQ
-">URL da API do WhatsApp</label>
-        <input type="password" id="https://wa.me/5587999786261" placeholder="Insira a URL da API" required>
+        <label for="whatsappNumber">Número WhatsApp:</label>
+        <input type="text" id="whatsappNumber" placeholder="5587999786261" required>
       </div>
       <div class="form-group">
-        <label for="whatsappNumber">5587999786261</label>
-        <input type="password" id="5587999786261" placeholder="Número com código do país" required>
+        <label for="message">Mensagem Inicial:</label>
+        <textarea id="message" placeholder="Olá! Conheça nosso curso de Inteligência Artificial, ideal para você que deseja aprender sobre IA em saúde, educação, cultura, e mais. Aproveite essa oportunidade!" required></textarea>
       </div>
       <div class="form-group">
-        <label for="message">Mensagem Automática</label>
-        <textarea id="message" placeholder="Escreva sua mensagem de resposta automática"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="link">Link (Opcional)</label>
-        <input type="text" id="link" placeholder="Insira o link (opcional)">
-      </div>
-      <div class="form-group">
-        <label for="audioFile">Áudio (Opcional)</label>
-        <input type="file" id="audioFile" accept="audio/*">
-      </div>
-      <div class="form-group">
-        <label for="videoFile">Vídeo (Opcional)</label>
-        <input type="file" id="videoFile" accept="video/*">
-      </div>
-      <div class="form-group">
-        <label for="imageFile">Imagem (Opcional)</label>
-        <input type="file" id="imageFile" accept="image/*">
-      </div>
-      <div class="form-group">
-        <label for="documentFile">Documento (Opcional)</label>
-        <input type="file" id="documentFile" accept=".pdf, .doc, .docx, .xls, .xlsx">
+        <label for="link">Link do Curso:</label>
+        <input type="text" id="link" placeholder="https://pliniocell.rdi.store/products/">
       </div>
       <button type="button" class="btn" onclick="sendMessage()">Configurar Resposta</button>
+      <div class="typing-indicator" id="typingIndicator">Digitando...</div>
     </form>
+    <footer>
+      © 2024 - iaDesigner - Feito com ❤ | <a href="https://instagram.com/pliniofabricio_" target="_blank">@Instagram</a>
+    </footer>
+    <div class="logout" onclick="logout()">Sair</div>
   </div>
 
   <script>
-    function sendMessage() {
-      const apiURL = document.getElementById('http://wa.me/5587999786261').value;
-      const whatsappNumber = document.getElementById('5587999786261').value;
-      const message = document.getElementById('message').value;
-      const link = document.getElementById('link').value;
-      const audioFile = document.getElementById('audioFile').files[0];
-      const videoFile = document.getElementById('videoFile').files[0];
-      const imageFile = document.getElementById('imageFile').files[0];
-      const documentFile = document.getElementById('documentFile').files[0];
-      
-      const formData = new FormData();
-      formData.append("5587999786261", );
-      formData.append("message", message);
-      if (link) formData.append("link", link);
-      if (audioFile) formData.append("audio", audioFile);
-      if (videoFile) formData.append("video", videoFile);
-      if (imageFile) formData.append("image", imageFile);
-      if (documentFile) formData.append("document", documentFile);
+    // Login Functionality
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username === "ead" && password === "1316") {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('chatbotContainer').style.display = 'block';
+      } else {
+        alert('ID ou senha incorretos.');
+      }
+    }
 
-      fetch(IJKXIYDA2JEAEIBJ5ZJAEKAHXL2CDXUE
-TK3FKIB2C5Q4X7JKGOGEUSOUVSHQPTUQ, {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert("Mensagem configurada com sucesso!");
-      })
-      .catch(error => {
-        alert("Erro ao configurar a mensagem.");
-        console.error("Erro:", error);
-      });
+    function logout() {
+      document.getElementById('chatbotContainer').style.display = 'none';
+      document.getElementById('loginContainer').style.display = 'block';
+    }
+
+    // Função para enviar mensagem usando a API do WhatsApp
+    async function sendWhatsAppMessage(whatsappNumber, message, link) {
+      const apiKey = 'IJKXIYDA2JEAEIBJ5ZJAEKAHXL2CDXUE'; // sua chave da API
+      const url = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}${link ? '%0A' + link : ''}`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+          },
+        });
+
+        if (response.ok) {
+          const jsonResponse = await response.json();
+          console.log('Mensagem enviada com sucesso:', jsonResponse);
+        } else {
+          console.error('Erro ao enviar mensagem:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+      }
+    }
+
+    // Simulate typing indicator and send message
+    function sendMessage() {
+      const whatsappNumber = document.getElementById('whatsappNumber').value;
+      const message = encodeURIComponent(document.getElementById('message').value);
+      const link = document.getElementById('link').value ? encodeURIComponent(document.getElementById('link').value) : '';
+      const typingIndicator = document.getElementById('typingIndicator');
+      
+      typingIndicator.style.display = 'block';
+      setTimeout(() => {
+        typingIndicator.style.display = 'none';
+        // Chame a função para enviar a mensagem
+        sendWhatsAppMessage(whatsappNumber, message, link);
+      }, 3000);
     }
   </script>
+
 </body>
 </html>
