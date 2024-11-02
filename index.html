@@ -162,7 +162,7 @@
     </div>
 
     <script>
-        // Login Functionality
+        // Função de Login
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -180,12 +180,6 @@
         }
 
         // Função para enviar mensagem usando a API do WhatsApp
-        async function sendWhatsAppMessage(whatsappNumber, message, link) {
-            const url = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}${link ? '%0A' + link : ''}`;
-            window.open(url, '_blank');
-        }
-
-        // Simulate typing indicator and send message
         function sendMessage() {
             const whatsappNumber = document.getElementById('whatsappNumber').value;
             const message = encodeURIComponent(document.getElementById('message').value);
@@ -195,10 +189,11 @@
             typingIndicator.style.display = 'block';
             setTimeout(() => {
                 typingIndicator.style.display = 'none';
-                // Chame a função para enviar a mensagem
-                sendWhatsAppMessage(whatsappNumber, message, link);
+                const url = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}${link ? '%0A' + link : ''}`;
+                window.open(url, '_blank');
             }, 3000);
         }
     </script>
+
 </body>
 </html>
