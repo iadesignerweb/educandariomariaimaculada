@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bíblia Sagrada</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+  <style>
+    /* Tela de Splash */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fdf6e3; /* Cor de papiro */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      z-index: 1000;
+      transition: opacity 1s ease-out;
+    }
+    #splash-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .splash-text {
+        text-align: center;
+    }
+    .splash-text h1 {
+      font-size: 3em;
+      color: #795548; /* Tom marrom */
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+    .splash-img {
+      max-width: 80%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .loading-bar {
+      width: 50%;
+      height: 4px;
+      background-color: #8d6e63;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .loading-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: #795548;
+      animation: load 3s linear forwards;
+    }
+    @keyframes load {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Estilos Gerais do Corpo */
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f5f5f5; /* Cor de papiro */
+    }
+    .panel-info {
+      border-color: #d7ccc8;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .panel-heading {
+      background-color: #8d6e63 !important; /* Marrom escuro */
+      color: #fff !important;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    .panel-body {
+      padding: 0;
+      background-color: #fff8e1; /* Cor de papiro mais clara */
+    }
+    .list-group-item {
+      border: none;
+      border-bottom: 1px solid #efebe9;
+      background-color: transparent;
+      padding: 15px 20px;
+      font-size: 1.1em;
+      transition: background-color 0.3s ease;
+    }
+    .list-group-item:hover {
+      background-color: #e3d3c7;
+    }
+    .list-group-item.active {
+      background-color: #795548 !important;
+      border-color: #795548 !important;
+      color: #fff !important;
+      font-weight: bold;
+      cursor: default;
+    }
+    .list-group a {
+      color: #4e342e; /* Marrom escuro */
+    }
+    .list-group h4 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    .modal-content {
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      background-color: #8d6e63;
+      color: #fff;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom: none;
+    }
+    .modal-title {
+      font-weight: 300;
+    }
+    .modal-footer {
+      border-top: none;
+      padding: 15px;
+    }
+    .modal-body ul.list-group {
+      max-height: 65vh;
+      overflow-y: auto;
+    }
+    .modal-body .list-group-item a {
+      color: #4e342e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .audio-icon {
+      color: #8d6e63;
+      font-size: 1.2em;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .blockquote-reverse {
+      border-left: none;
+      border-right: 5px solid #8d6e63;
+      padding-right: 15px;
+      text-align: right;
+    }
+    blockquote h2 {
+      font-size: 1.4em;
+      line-height: 1.6;
+    }
+    blockquote footer {
+      font-size: 0.9em;
+      color: #757575;
+    }
+    @media (max-width: 768px) {
+      .modal-dialog.modal-lg {
+        width: 95%;
+        margin: 10px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="main-content" style="display: none;">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h2 class="text-center"><b>Bíblia Sagrada</b></h2>
+    </div>
+    <div class="panel-body">
+      <div id="livros" class="list-group">
+        <img class='center-block' src='https://cdn.dribbble.com/users/33589/screenshots/1154868/gears-gif-3_1.gif' alt='Engrenagem de carregamento' style="width: 64px; height: 64px;">
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="modalCapitulos" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="pull-right btn-group" role="group">
+            <button id="prev" type="button" class="btn btn-default" aria-label="Capítulo anterior"><i class="glyphicon glyphicon-menu-left"></i></button>
+            <button id="next" type="button" class="btn btn-default" aria-label="Próximo capítulo"><i class="glyphicon glyphicon-menu-right"></i></button>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span id="capituloAtual">1</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right"></ul>
+            </div>
+          </div>
+          <h4 class="modal-title" id="labelCapitulo">Título do modal</h4>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group"></ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalCompartilhar" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Compartilhar</h4>
+        </div>
+        <div class="modal-body">
+          <blockquote class="blockquote-reverse">
+            <h2><i class="fa fa-quote-left"> </i> <span id="text"></span></h2>
+            <footer><cite id="referencia"></cite></footer>
+          </blockquote>
+        </div>
+        <div class="modal-footer">
+          <div class="pull-left">
+            <a class="btn btn-primary" id="tweet-quote" title="Tweet este versículo!" target="_blank">
+              <i class="fa fa-twitter"></i>
+            </a>
+            <a class="btn btn-success" id="whats-quote" title="Compartilhar no WhatsApp!" target="_blank">
+              <i class="fa fa-whatsapp"></i>
+            </a>
+          </div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script>
+  var biblia = {};
+  var livroAtual = {};
+  var lenghtLivroAtual = 0;
+  var capituloAtual = 0;
+  var verciculoAtual = "";
+  var referenciaVerciculo = "";
+  var synth = window.speechSynthesis;
+  var voices = [];
+
+  function getBiblia() {
+    $.getJSON("https://raw.githubusercontent.com/davigsouza81/biblia/master/json/aa.json", function(dados) {
+      var livros = [];
+      livros.push('<h4 class="list-group-item active">Velho Testamento</h4>');
+      $.each(dados, function(key, val) {
+        biblia[val.name] = val;
+        livros.push('<a href="#" class="list-group-item" onclick="getLivro(\'' + val.name + '\')">' + val.name + '</a>');
+        if (val.name === "Malaquias") {
+          livros.push('<h4 class="list-group-item active">Novo Testamento</h4>');
+        }
+      });
+      $('#livros').html(livros);
+    });
+  }
+
+  function getLivro(livro) {
+    livroAtual = biblia[livro];
+    lenghtLivroAtual = livroAtual.chapters.length - 1;
+    var capitulos = [];
+    for (var i = 0; i <= lenghtLivroAtual; i++) {
+      capitulos.push('<li class="text-justify"><a href="#" onclick="getCapitulo(' + i + ')">Capítulo - <span class="badge">' + (i + 1) + '</span></a></li>');
+    }
+    $("#labelCapitulo").html(livroAtual.name);
+    $(".dropdown-menu").html(capitulos);
+    getCapitulo(0);
+    $("#modalCapitulos").modal();
+  }
+
+  function getCapitulo(numero) {
+    capituloAtual = numero;
+    var verciculos = [];
+    $.each(livroAtual.chapters[numero], function(key, val) {
+      verciculos.push('<li class="list-group-item"><div><b>' + (key + 1) + ' - </b>' + val + '</div><div class="pull-right"><i class="fa fa-share-alt audio-icon" onclick="compartilharVersiculo(' + key + ')"></i> <i class="fa fa-volume-up audio-icon" onclick="lerVersiculo(\'' + val.replace(/'/g, "\\'") + '\', \'' + livroAtual.name + ' ' + (capituloAtual + 1) + ':' + (key + 1) + '\')"></i></div></li>');
+    });
+    $("#capituloAtual").html(capituloAtual + 1);
+    $(".modal-body > ul").html(verciculos);
+  }
+  
+  function compartilharVersiculo(verciculo) {
+    verciculoAtual = livroAtual.chapters[capituloAtual][verciculo];
+    referenciaVerciculo = livroAtual.name + " " + (capituloAtual + 1) + ":" + (verciculo + 1);
+    $("#modalCompartilhar #text").html(verciculoAtual);
+    $("#modalCompartilhar #referencia").html(referenciaVerciculo);
+    $('#tweet-quote').attr('href', 'https://twitter.com/intent/tweet?hashtags=biblia&text=' + encodeURIComponent('"' + verciculoAtual + '" ' + referenciaVerciculo));
+    $("#whats-quote").attr('href', 'https://api.whatsapp.com/send?text=' + encodeURIComponent('"' + verciculoAtual + '" ' + referenciaVerciculo));
+    $("#modalCompartilhar").modal();
+    $("#modalCompartilhar").on('hidden.bs.modal', function() {
+      $("body").addClass("modal-open");
+    });
+  }
+
+  function lerVersiculo(texto, referencia) {
+    if ('speechSynthesis' in window) {
+      synth.cancel();
+      var utterance = new SpeechSynthesisUtterance();
+      utterance.text = referencia + ', ' + texto;
+      utterance.lang = 'pt-BR';
+      utterance.volume = 1;
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+
+      if (voices.length > 0) {
+          const portugueseVoice = voices.find(voice => voice.lang === 'pt-BR' && voice.name.includes('Google'));
+          if (portugueseVoice) {
+              utterance.voice = portugueseVoice;
+          }
+      }
+      
+      synth.speak(utterance);
+    } else {
+      alert("Seu navegador não suporta síntese de fala. Tente com um navegador mais recente, como Chrome ou Firefox.");
+    }
+  }
+
+  $(document).ready(function() {
+    if ('speechSynthesis' in window) {
+      synth.onvoiceschanged = () => {
+        voices = synth.getVoices();
+      };
+    }
+    
+    $("#splash-screen .splash-text").prepend('<h1>Bíblia Sagrada</h1>');
+    
+    setTimeout(function() {
+      $("#splash-screen").addClass("fade-out");
+    }, 3000);
+    
+    setTimeout(function() {
+      $("#main-content").show();
+      getBiblia();
+    }, 4000);
+  });
+</script>
+
+<div id="splash-screen">
+  <div class="splash-text">
+    <img src="https://raw.githubusercontent.com/iadesignerweb/site/refs/heads/main/Picsart_25-09-08_18-04-06-713.png" alt="Jesus" class="splash-img">
+    <div class="loading-bar"></div>
+  </div>
+</div>
+
+</body>
+</html>
+
