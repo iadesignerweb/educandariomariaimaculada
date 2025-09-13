@@ -7,68 +7,99 @@
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
   <style>
-    /* Tela de Splash */
+    /* Splash Screen Mais Profissional */
     #splash-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #fdf6e3; /* Cor de papiro */
+      background: #fdf6e3;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
       text-align: center;
       z-index: 1000;
-      transition: opacity 1s ease-out;
+      transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     #splash-screen.fade-out {
       opacity: 0;
       pointer-events: none;
     }
     .splash-text {
-        text-align: center;
+      opacity: 0; /* Começa com opacidade 0 */
+      animation: fadeIn 1.5s forwards; /* Aplica a animação no container */
+      text-align: center;
     }
     .splash-text h1 {
-      font-size: 3em;
-      color: #795548; /* Tom marrom */
+      font-size: 3.5em;
+      color: #795548;
       font-weight: 300;
       letter-spacing: 2px;
+      margin-bottom: 20px;
     }
     .splash-img {
       max-width: 80%;
       height: auto;
       border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: none;
+      border: none;
+      padding: 0;
+      background-color: transparent;
     }
-    .loading-bar {
-      width: 50%;
-      height: 4px;
-      background-color: #8d6e63;
-      margin-top: 20px;
+    
+    /* NOVO SIMULADOR ESPIRITUAL - "Halo Brilhante" */
+    .spiritual-loader {
       position: relative;
-      overflow: hidden;
+      width: 60px;
+      height: 60px;
+      margin-top: 30px;
+      border-radius: 50%;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 0 0 rgba(255, 255, 200, 0.7);
+      animation: spiritualPulse 2s infinite ease-out;
     }
-    .loading-bar::before {
+    .spiritual-loader::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background-color: #795548;
-      animation: load 3s linear forwards;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #fdd835;
+      box-shadow: 0 0 15px #fdd835;
     }
-    @keyframes load {
-      0% { left: -100%; }
-      100% { left: 100%; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes spiritualPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 200, 0.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 25px rgba(255, 255, 200, 0);
+        transform: scale(1.2);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 200, 0);
+        transform: scale(1);
+      }
     }
 
     /* Estilos Gerais do Corpo */
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-color: #f5f5f5; /* Cor de papiro */
+      background-color: #f5f5f5;
+      padding-bottom: 50px;
+      position: relative;
+      min-height: 100vh;
     }
     .panel-info {
       border-color: #d7ccc8;
@@ -76,14 +107,14 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     .panel-heading {
-      background-color: #8d6e63 !important; /* Marrom escuro */
+      background-color: #8d6e63 !important;
       color: #fff !important;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
     .panel-body {
       padding: 0;
-      background-color: #fff8e1; /* Cor de papiro mais clara */
+      background-color: #fff8e1;
     }
     .list-group-item {
       border: none;
@@ -104,7 +135,7 @@
       cursor: default;
     }
     .list-group a {
-      color: #4e342e; /* Marrom escuro */
+      color: #4e342e;
     }
     .list-group h4 {
       margin-top: 0;
@@ -164,6 +195,23 @@
         width: 95%;
         margin: 10px auto;
       }
+    }
+
+    /* Rodapé */
+    footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        background-color: #4e342e;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.9em;
+        text-align: center;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 999;
     }
   </style>
 </head>
@@ -329,13 +377,9 @@
       };
     }
     
-    $("#splash-screen .splash-text").prepend('<h1>Bíblia Sagrada</h1>');
-    
+    // Oculta a tela de splash e mostra o conteúdo principal
     setTimeout(function() {
       $("#splash-screen").addClass("fade-out");
-    }, 3000);
-    
-    setTimeout(function() {
       $("#main-content").show();
       getBiblia();
     }, 4000);
@@ -344,11 +388,16 @@
 
 <div id="splash-screen">
   <div class="splash-text">
-    <img src="https://raw.githubusercontent.com/iadesignerweb/educandariomariaimaculada/refs/heads/main/Picsart_25-09-13_12-45-30-638.png" alt="Jesus" class="splash-img">
-    <div class="loading-bar"></div>
+    <h1>Bíblia Sagrada</h1>
+    <img src="https://raw.githubusercontent.com/iadesignerweb/educandariomariaimaculada/refs/heads/main/Picsart_25-09-13_12-45-30-638.png" alt="Logo" class="splash-img">
+    
+<div class="spiritual-loader"></div>
   </div>
 </div>
 
+<footer>
+    <p>&copy; Copyright 2025 - Plinio Studio</p>
+</footer>
+
 </body>
 </html>
-
